@@ -36,6 +36,25 @@ class KODI_WEBSERVER:
         except timeout:
             self.draw_default.setInfoText("NO KODI ACCESS!", self._ConfigDefault['color.red'])
             return json.loads('{"id":1,"jsonrpc":"2.0","result":[]}')       
+
+
+    def getImage(self, url):
+        self.draw_default.setInfoText("", self._ConfigDefault['color.white'])
+        try:
+            headers = {'content-type': 'application/json'}
+            request = urllib2.Request(self.ip_port + 'image/' + url, None, headers)
+            
+            return urllib2.urlopen(request,timeout=3).read()
+        except IOError:
+            self.draw_default.setInfoText("NO KODI ACCESS!", self._ConfigDefault['color.red'])
+            return json.loads('{"id":1,"jsonrpc":"2.0","result":[]}')
+        except timeout:
+            self.draw_default.setInfoText("NO KODI ACCESS!", self._ConfigDefault['color.red'])
+            return json.loads('{"id":1,"jsonrpc":"2.0","result":[]}')
+	except:
+	    self.draw_default.setInfoText("NO KODI ACCESS!", self._ConfigDefault['color.red'])
+            return json.loads('{"id":1,"jsonrpc":"2.0","result":[]}') 
+
         
     def KODI_GetActivePlayers(self):
         try:
@@ -94,3 +113,38 @@ class KODI_WEBSERVER:
             self.helper.printout("[warning]    ", self._ConfigDefault['mesg.red'])
             print 'Decoding JSON has failed'
             return 0,[0,0,0],[0,0,0]
+
+    def KODI_GetPoster(self, playerid, playertype):
+        try:
+            if playertype == "video":
+                player_params_id = "VideoGetItem"
+            elif playertype == "audio":
+                player_params_id = "AudioGetItem"
+            else:
+                return ""
+
+            parsed_json = self.getJSON('{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["art"], "playerid": '+str(playerid)+' }, "id": "'+str(player_params_id)+'"}')
+            try:
+		if parsed_json['result']['item']['type'] == "unknown":
+                        poster_path = ""
+		elif parsed_json['result']['item']['type'] == "episode":
+                	poster_path = parsed_json['result']['item']['art']['tvshow.poster']
+		elif parsed_json['result']['item']['type'] == "movie":
+                        poster_path = parsed_json['result']['item']['art']['poster']
+                elif parsed_json['result']['item']['type'] == "song":
+                        poster_path = parsed_json['result']['item']['art']['album.thumb']
+		else:
+			return ""
+		return self.getImage(poster_path[8:-1])
+            except KeyError, e:
+                #print "KeyError: " + str(e)
+                return ""
+            except IndexError, e:
+                print "IndexError: " + str(e)
+                return ""
+        
+        except ValueError:
+            self.helper.printout("[warning]    ", self._ConfigDefault['mesg.red'])
+            print 'Decoding JSON has failed'
+            return ""
+

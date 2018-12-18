@@ -182,14 +182,16 @@ def main():
             if playertype=="video" and int(playerid) >= 0:    
                 media_title = KODI_WEBSERVER.KODI_GetItem(playerid, playertype)
                 speed, media_time, media_totaltime = KODI_WEBSERVER.KODI_GetProperties(playerid)
+		poster = KODI_WEBSERVER.KODI_GetPoster(playerid, playertype)
                 if _ConfigDefault['config.screenmodus']=="time":
-                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime)
+                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime, poster)
             elif playertype == "audio" and int(playerid) >= 0:
                 # Clone from Video
                 media_title = KODI_WEBSERVER.KODI_GetItem(playerid, playertype)
                 speed, media_time, media_totaltime = KODI_WEBSERVER.KODI_GetProperties(playerid)
+		poster = KODI_WEBSERVER.KODI_GetPoster(playerid, playertype)
                 if _ConfigDefault['config.screenmodus']=="time":
-                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime)
+                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime, poster)
             else:
                 # API has nothing
                 media_title = ""

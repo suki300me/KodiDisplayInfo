@@ -69,13 +69,15 @@ class DrawToDisplay_Default:
         self.screen.blit(text, [x, y])
     
     def drawLogoStartScreen(self, time_now):
-        if self.default_info_text != '':
+        if self.default_info_text == 'NO KODI ACCESS!':
+            self.infoTextKODI("Hello!", self._ConfigDefault['color.white'])
+        elif self.default_info_text != '':
             self.infoTextKODI(self.default_info_text, self.default_info_color)
         else:
-            self.infoTextKODI("KodiDisplayInfo", self._ConfigDefault['color.white'])
+            self.infoTextKODI("Kodi", self._ConfigDefault['color.white'])
         
         x = (self.screen.get_width()/2) - (self._drawSetting['startscreen.logo'].get_rect().width/2)
         y = (self.screen.get_height()/2) - (self._drawSetting['startscreen.logo'].get_rect().height/2)
         self.screen.blit(self._drawSetting['startscreen.logo'],(x,y-10))
 
-        self.displaytext(time_now.strftime("%H:%M:%S"), self._drawSetting['startscreen.clock.fontsize'], (self.screen.get_width()/2), (self.screen.get_height()/2)+self._drawSetting['startscreen.clock.height_margin'], 'none', (self._ConfigDefault['color.white']))
+        self.displaytext(time_now.strftime("%-I:%M:%S %p"), self._drawSetting['startscreen.clock.fontsize'], (self.screen.get_width()/2), (self.screen.get_height()/2)+self._drawSetting['startscreen.clock.height_margin'], 'none', (self._ConfigDefault['color.white']))
