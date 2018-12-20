@@ -16,6 +16,8 @@ class DrawToDisplay_VideoTime:
     
     _drawSetting['videoinfo.button.play'] = ""
     _drawSetting['videoinfo.button.break'] = ""
+    _drawSetting['videoinfo.button.play.margin_left'] = 165
+    _drawSetting['videoinfo.button.break.margin_left'] = 165
     
     _drawSetting['videoinfo.title.fontsize'] = 43
     _drawSetting['videoinfo.title.height_margin'] = 4
@@ -64,6 +66,8 @@ class DrawToDisplay_VideoTime:
         
         self._drawSetting['videoinfo.button.play'] = self.pygame.image.load(self._ConfigDefault['basedirpath']+'img/button_play_480x320.png')
         self._drawSetting['videoinfo.button.break'] = self.pygame.image.load(self._ConfigDefault['basedirpath']+'img/button_break_480x320.png')
+        self._drawSetting['videoinfo.button.play.margin_left'] = 220
+        self._drawSetting['videoinfo.button.break.margin_left'] = 220
     
         self._drawSetting['videoinfo.title.fontsize'] = 60
         self._drawSetting['videoinfo.title.height_margin'] = 5
@@ -86,26 +90,28 @@ class DrawToDisplay_VideoTime:
         self._drawSetting['startscreen.clock.fontsize'] = 75
         self._drawSetting['startscreen.clock.height_margin'] = 118
         
-        self._drawSetting['videoinfo.progressbar.margin_top'] = 146
+        self._drawSetting['videoinfo.progressbar.margin_top'] = 150
         self._drawSetting['videoinfo.progressbar.height'] = 10
         
         self._drawSetting['videoinfo.button.play'] = self.pygame.image.load(self._ConfigDefault['basedirpath']+'img/button_play_480x320.png')
         self._drawSetting['videoinfo.button.break'] = self.pygame.image.load(self._ConfigDefault['basedirpath']+'img/button_break_480x320.png')
-     
+	self._drawSetting['videoinfo.button.play.margin_left'] = 220
+	self._drawSetting['videoinfo.button.break.margin_left'] = 220
+
         self._drawSetting['videoinfo.title.fontsize'] = 60
         self._drawSetting['videoinfo.title.height_margin'] = 0
 	self._drawSetting['videoinfo.title.margin_left'] = 230
     
         self._drawSetting['videoinfo.time_now.fontsize'] = 70
-        self._drawSetting['videoinfo.time_now.height_margin'] = 76
-        self._drawSetting['videoinfo.time_end.fontsize'] = 42
-        self._drawSetting['videoinfo.time_end.height_margin'] = 38
+        self._drawSetting['videoinfo.time_now.height_margin'] = 80
+        self._drawSetting['videoinfo.time_end.fontsize'] = 46
+        self._drawSetting['videoinfo.time_end.height_margin'] = 50
         
-        self._drawSetting['videoinfo.time.fontsize'] = 42
+        self._drawSetting['videoinfo.time.fontsize'] = 54
         self._drawSetting['videoinfo.time.margin_left'] = 230
-        self._drawSetting['videoinfo.time.margin_top'] = 66
+        self._drawSetting['videoinfo.time.margin_top'] = 84
+	self._drawSetting['videoinfo.length.fontsize'] = 48
 
-	self._drawSetting['videoinfo.length.fontsize'] = 26
 	self._drawSetting['videoinfo.default_poster'] = self.pygame.image.load(self._ConfigDefault['basedirpath']+'img/poster_480x320.png')
 
         
@@ -123,52 +129,64 @@ class DrawToDisplay_VideoTime:
         self.pygame.draw.rect(self.screen, self._ConfigDefault['color.orange'], rect_done)
         self.pygame.draw.rect(self.screen, 000000, rect_bar, 1)
         
-    def drawProperties(self, video_title, time_now, speed, media_time, media_totaltime, poster):
+    def drawProperties(self, video_title, time_now, speed, media_time, media_totaltime, config):
         margin_top = 0
         videoinfo_title_fontsize = self._drawSetting['videoinfo.title.fontsize']
         
         self.time = self.helper.format_to_seconds(media_time[0], media_time[1], media_time[2])
         self.totaltime = self.helper.format_to_seconds(media_totaltime[0], media_totaltime[1], media_totaltime[2])
         
-        if len(video_title)>15 and self._ConfigDefault['config.titleformat']=="twoline":                    
-            max_word_count = 21
-            if self._ConfigDefault['display.resolution']=="480x320":
+        #if len(video_title)>15 and self._ConfigDefault['config.titleformat']=="twoline":                    
+            #max_word_count = 21
+        if self._ConfigDefault['display.resolution']=="480x320":
                 videoinfo_title_fontsize = 49
                 margin_top = -18
                 second_title_height_margin = -46
 		poster_height = 320
 		poster_width = 220
-            if self._ConfigDefault['display.resolution']=="480x272":
+        if self._ConfigDefault['display.resolution']=="480x272":
                 videoinfo_title_fontsize = 42
                 margin_top = -11
                 second_title_height_margin = -40
                 poster_height = 320
                 poster_width = 220
-            if self._ConfigDefault['display.resolution']=="320x240":
+        if self._ConfigDefault['display.resolution']=="320x240":
                 videoinfo_title_fontsize = 40
                 margin_top = -16
-                max_word_count = 16
+                #max_word_count = 16
                 second_title_height_margin = -38
                 poster_height = 240
                 poster_width = 165
-                
-            last_space = video_title.rindex(' ', 0, max_word_count);
-            old_video_title = video_title
-            line1 = old_video_title[0:last_space].strip()
-            line2 = old_video_title[last_space:].strip()
+               	
+        #last_space = video_title.rindex(' ', 0, max_word_count);
+        #old_video_title = video_title
+        #line1 = old_video_title[0:last_space].strip()
+        #line2 = old_video_title[last_space:].strip()
       
-            self.draw_default.displaytext(line1, videoinfo_title_fontsize, self._drawSetting['videoinfo.title.margin_left'], self.screen.get_height()-self._drawSetting['videoinfo.title.height_margin']+second_title_height_margin, 'left', (self._ConfigDefault['color.white']))
-            self.draw_default.displaytext(line2, videoinfo_title_fontsize, self._drawSetting['videoinfo.title.margin_left'], self.screen.get_height()-self._drawSetting['videoinfo.title.height_margin'], 'left', (self._ConfigDefault['color.white']))
-        else:
-	    if len(video_title)>7:
-		videoinfo_title_fontsize=40
-            self.draw_default.displaytext(video_title, videoinfo_title_fontsize, self._drawSetting['videoinfo.title.margin_left'], self.screen.get_height()-self._drawSetting['videoinfo.title.height_margin'], 'left', (self._ConfigDefault['color.white']))
+        #self.draw_default.displaytext(line1, videoinfo_title_fontsize, self._drawSetting['videoinfo.title.margin_left'], self.screen.get_height()-self._drawSetting['videoinfo.title.height_margin']+second_title_height_margin, 'left', (self._ConfigDefault['color.white']))
+        #self.draw_default.displaytext(line2, videoinfo_title_fontsize, self._drawSetting['videoinfo.title.margin_left'], self.screen.get_height()-self._drawSetting['videoinfo.title.height_margin'], 'left', (self._ConfigDefault['color.white']))
+        #else:
+	    #if len(video_title)>7:
+		#videoinfo_title_fontsize=40
+
+	#if (config['video_title_offset'] == 230):
+	#	config['video_title_offset'] = self._drawSetting['videoinfo.title.margin_left']
+		#video_title_offset = 250
+
+	if len(video_title) > 11:
+		config['video_title_offset'] = config['video_title_offset'] - 10
+	else:
+		config['video_title_offset'] = self._drawSetting['videoinfo.title.margin_left']
+
+	if (config['video_title_offset'] < (len(video_title) * (-15))):
+		config['video_title_offset'] = self.screen.get_width() - 10
+
+        self.draw_default.displaytext(video_title, videoinfo_title_fontsize, config['video_title_offset'], self.screen.get_height()-self._drawSetting['videoinfo.title.height_margin'], 'left', (self._ConfigDefault['color.white']))
         
         self.draw_default.displaytext(str(time_now.strftime("%-I:%M%p")), self._drawSetting['videoinfo.time_now.fontsize'], self.screen.get_width(), self._drawSetting['videoinfo.time_now.height_margin'], 'right', (self._ConfigDefault['color.white']))
 
-       
         addtonow = time_now + timedelta(seconds=(self.totaltime-self.time))
-        self.draw_default.displaytext(str('Ends: ' + addtonow.strftime("%-I:%M%p")), self._drawSetting['videoinfo.time_end.fontsize'], self.screen.get_width(), self._drawSetting['videoinfo.time_now.height_margin'] + self._drawSetting['videoinfo.time_end.height_margin'], 'right', (self._ConfigDefault['color.white']))
+        self.draw_default.displaytext(str('Ends:' + addtonow.strftime("%-I:%M%p")), self._drawSetting['videoinfo.time_end.fontsize'], self.screen.get_width(), self._drawSetting['videoinfo.time_now.height_margin'] + self._drawSetting['videoinfo.time_end.height_margin'], 'right', (self._ConfigDefault['color.white']))
     
         margin_progessbar = self._drawSetting['videoinfo.progressbar.margin_top']+self._drawSetting['videoinfo.progressbar.height']+margin_top
 
@@ -182,20 +200,20 @@ class DrawToDisplay_VideoTime:
                 margintop = 16
             
             self.draw_default.displaytext(self.helper.format_to_string(media_time[0], media_time[1], media_time[2]), self._drawSetting['videoinfo.time.fontsize'], self.screen.get_width(), margin_progessbar+self._drawSetting['videoinfo.time.margin_top']-margintop, 'right', (self._ConfigDefault['color.white']))
-            self.draw_default.displaytext('Length: '+self.helper.format_to_string(media_totaltime[0], media_totaltime[1], media_totaltime[2]), self._drawSetting['videoinfo.length.fontsize'], self.screen.get_width(), margin_progessbar+self._drawSetting['videoinfo.time.margin_top']-margintop+26, 'right', (self._ConfigDefault['color.white']))  
+            self.draw_default.displaytext('Len:'+self.helper.format_to_string(media_totaltime[0], media_totaltime[1], media_totaltime[2]), self._drawSetting['videoinfo.length.fontsize'], self.screen.get_width(), margin_progessbar+self._drawSetting['videoinfo.time.margin_top']-margintop+50, 'right', (self._ConfigDefault['color.white']))  
                
         self.drawProgressBar(margin_top)
                 
         if speed == 1:
-            self.screen.blit(self._drawSetting['videoinfo.button.play'], (230, margin_progessbar+8))
+            self.screen.blit(self._drawSetting['videoinfo.button.play'], (self._drawSetting['videoinfo.button.play.margin_left'], margin_progessbar+8))
         else:
-            self.screen.blit(self._drawSetting['videoinfo.button.break'], (230, margin_progessbar+8))
+            self.screen.blit(self._drawSetting['videoinfo.button.break'], (self._drawSetting['videoinfo.button.break.margin_left'], margin_progessbar+8))
 
 	try:
-	    if poster == "":
+	    if config['poster_path'] == "":
 		self.screen.blit(self._drawSetting['videoinfo.default_poster'], (0, 0))
 	    else:
-	    	scaled_poster = self.pygame.transform.scale(self.pygame.image.load(io.BytesIO(poster)), (poster_width, poster_height))
+	    	scaled_poster = self.pygame.transform.scale(self.pygame.image.load(self._ConfigDefault['KODI.home'] + '/userdata/Thumbnails/' + config['poster_path']), (poster_width, poster_height))
             	self.screen.blit(scaled_poster, (0, 0))
 	except:
             self.screen.blit(self._drawSetting['videoinfo.default_poster'], (0, 0))

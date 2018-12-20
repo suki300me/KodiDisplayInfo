@@ -52,6 +52,7 @@ _ConfigDefault = {
     "KODI.webserver.port":            "8080",
     "KODI.webserver.user":            "",
     "KODI.webserver.pass":            "",
+    "KODI.home":		      "/home/pi/.kodi",
     
     "display.resolution":       "320x240",   
     
@@ -115,8 +116,10 @@ if configParser.has_option('KODI_WEBSERVER', 'PORT'):
 if configParser.has_option('KODI_WEBSERVER', 'USER'):
     _ConfigDefault['KODI.webserver.user'] = configParser.get('KODI_WEBSERVER', 'USER')
 if configParser.has_option('KODI_WEBSERVER', 'PASS'):
-    _ConfigDefault['KODI.webserver.pass'] = configParser.get('KODI_WEBSERVER', 'PASS')        
-        
+    _ConfigDefault['KODI.webserver.pass'] = configParser.get('KODI_WEBSERVER', 'PASS')
+if configParser.has_option('KODI', 'HOME'):
+    _ConfigDefault['KODI.home'] = configParser.get('KODI', 'HOME')
+
 if configParser.has_option('COLOR', 'BLACK'):
     _ConfigDefault['color.black'] = helper.HTMLColorToRGB(configParser.get('COLOR', 'BLACK'))
 if configParser.has_option('COLOR', 'WHITE'):
@@ -162,6 +165,10 @@ def main():
     draw_videotime.setPygameScreen(pygame, screen, draw_default)
     
     running = True
+    config = {}
+    config['video_title_offset'] = -99999
+    config['poster_path'] = ""
+    config['poster_url'] = ""
     # run the game loop
     try:        
         while running:
@@ -180,18 +187,16 @@ def main():
             
             playerid, playertype = KODI_WEBSERVER.KODI_GetActivePlayers()
             if playertype=="video" and int(playerid) >= 0:    
-                media_title = KODI_WEBSERVER.KODI_GetItem(playerid, playertype)
+                media_title = KODI_WEBSERVER.KODI_GetItem(playerid, playertype, config)
                 speed, media_time, media_totaltime = KODI_WEBSERVER.KODI_GetProperties(playerid)
-		poster = KODI_WEBSERVER.KODI_GetPoster(playerid, playertype)
                 if _ConfigDefault['config.screenmodus']=="time":
-                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime, poster)
+                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime, config)
             elif playertype == "audio" and int(playerid) >= 0:
                 # Clone from Video
-                media_title = KODI_WEBSERVER.KODI_GetItem(playerid, playertype)
+                media_title = KODI_WEBSERVER.KODI_GetItem(playerid, playertype, config)
                 speed, media_time, media_totaltime = KODI_WEBSERVER.KODI_GetProperties(playerid)
-		poster = KODI_WEBSERVER.KODI_GetPoster(playerid, playertype)
                 if _ConfigDefault['config.screenmodus']=="time":
-                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime, poster)
+                    draw_videotime.drawProperties(media_title, time_now, speed, media_time, media_totaltime, config)
             else:
                 # API has nothing
                 media_title = ""
