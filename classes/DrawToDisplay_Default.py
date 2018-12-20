@@ -54,7 +54,7 @@ class DrawToDisplay_Default:
         self.displaytext(text, 32, (self.screen.get_width()/2), 20, 'none', color)
     
     def displaytext(self, text, size, x, y, floating, color):
-        font = self.pygame.font.Font(self._ConfigDefault['basedirpath']+"fonts/MC360.ttf", size)
+        font = self.pygame.font.Font(self._ConfigDefault['basedirpath']+"fonts/weblysleekuil.ttf", size)
         text = font.render(text, 1, color)
         if floating == 'right':
             x = x - text.get_rect().width
